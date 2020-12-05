@@ -58,7 +58,8 @@ function SignUp() {
   const [dateOfBirth, setdateOfBirth] = useState("");
   const [modalStyle] = useState(getModalStyle);
 
-  const handleSignUp = () => {
+  const handleSignUp = (e) => {
+    e.preventDefault();
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
 
@@ -88,78 +89,86 @@ function SignUp() {
     <div>
       <Grid item xs={5} style={modalStyle} className={classes.container}>
         <Paper className={classes.paper}>
-          <div>
-            <TextField
-              className={classes.input}
-              id="outlined-helperText"
-              label="First Name"
-              onChange={(e) => setFirstName(e.target.value)}
-              variant="outlined"
-            />
-          </div>
+          <form onSubmit={handleSignUp} autoComplete="off">
+            <div>
+              <TextField
+                className={classes.input}
+                id="outlined-helperText"
+                label="First Name"
+                required
+                onChange={(e) => setFirstName(e.target.value)}
+                variant="outlined"
+              />
+            </div>
 
-          <div>
-            <TextField
-              className={classes.input}
-              id="outlined-helperText"
-              label="Last Name"
-              onChange={(e) => setLastName(e.target.value)}
-              variant="outlined"
-            />
-          </div>
+            <div>
+              <TextField
+                className={classes.input}
+                id="outlined-helperText"
+                label="Last Name"
+                required
+                onChange={(e) => setLastName(e.target.value)}
+                variant="outlined"
+              />
+            </div>
 
-          <div>
-            <TextField
-              className={classes.input}
-              id="outlined-helperText"
-              label="Email"
-              helperText="Email will be the username"
-              onChange={(e) => setEmail(e.target.value)}
-              variant="outlined"
-            />
-          </div>
+            <div>
+              <TextField
+                className={classes.input}
+                id="outlined-helperText"
+                label="Email"
+                required
+                helperText="Email will be the username"
+                onChange={(e) => setEmail(e.target.value)}
+                variant="outlined"
+              />
+            </div>
 
-          <div>
-            <TextField
-              className={classes.input}
-              id="outlined-helperText"
-              label="Password"
-              type="password"
-              onChange={(e) => setPassword(e.target.value)}
-              variant="outlined"
-            />
-          </div>
+            <div>
+              <TextField
+                className={classes.input}
+                id="outlined-helperText"
+                label="Password"
+                type="password"
+                required
+                onChange={(e) => setPassword(e.target.value)}
+                variant="outlined"
+              />
+            </div>
 
-          <div>
-            <TextField
-              className={classes.input}
-              id="outlined-helperText"
-              label="Phone Number"
-              onChange={(e) => setPhoneNumber(e.target.value)}
-              variant="outlined"
-            />
-          </div>
+            <div>
+              <TextField
+                className={classes.input}
+                id="outlined-helperText"
+                label="Phone Number"
+                required
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                variant="outlined"
+              />
+            </div>
 
-          <div>
-            <TextField
-              id="date"
-              label="Date of Birth"
-              type="date"
-              className={classes.textField}
-              onChange={(e) => setdateOfBirth(e.target.value)}
-              InputLabelProps={{
-                shrink: true,
-              }}
-            />
-          </div>
-          <Button
-            variant="contained"
-            color="primary"
-            className={classes.button}
-            onClick={handleSignUp}
-          >
-            Sign Up
-          </Button>
+            <div>
+              <TextField
+                id="date"
+                label="Date of Birth"
+                type="date"
+                required
+                className={classes.textField}
+                onChange={(e) => setdateOfBirth(e.target.value)}
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </div>
+            <Button
+              variant="contained"
+              color="primary"
+              type="submit"
+              className={classes.button}
+            >
+              Sign Up
+            </Button>
+          </form>
         </Paper>
       </Grid>
     </div>
