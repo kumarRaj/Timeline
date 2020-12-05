@@ -28,9 +28,25 @@ const useStyles = makeStyles((theme) => ({
   container: {
     margin: "auto",
     marginTop: "50px",
-    boxShadow: "20px 20px 60px #808080, -20px -20px 60px #ffffff",
+    // boxShadow: "20px 20px 60px #808080, -20px -20px 60px #ffffff",
+    position: "absolute",
+    width: "90%",
+    backgroundColor: theme.palette.background.paper,
+    border: "2px solid #000",
+    boxShadow: theme.shadows[5],
   },
 }));
+
+function getModalStyle() {
+  const top = 45;
+  const left = 48;
+
+  return {
+    top: `${top}%`,
+    left: `${left}%`,
+    transform: `translate(-${top}%, -${left}%)`,
+  };
+}
 
 function SignUp() {
   const classes = useStyles();
@@ -40,6 +56,7 @@ function SignUp() {
   const [password, setPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [dateOfBirth, setdateOfBirth] = useState("");
+  const [modalStyle] = useState(getModalStyle);
 
   const handleSignUp = () => {
     var myHeaders = new Headers();
@@ -69,7 +86,7 @@ function SignUp() {
 
   return (
     <div>
-      <Grid item xs={4} className={classes.container}>
+      <Grid item xs={5} style={modalStyle} className={classes.container}>
         <Paper className={classes.paper}>
           <div>
             <TextField
