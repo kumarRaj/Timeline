@@ -33,10 +33,11 @@ public class User {
 
     private Date dateOfBirth;
 
-    public User(String firstName, String lastName, String emailId, String phoneNumber, Date dateOfBirth) {
+    public User(String firstName, String lastName, String emailId, String password, String phoneNumber, Date dateOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailId = emailId;
+        this.password = password;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
     }
