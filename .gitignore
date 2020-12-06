@@ -88,6 +88,8 @@ yarn-error.log*
 backend/.idea
 backend/bin
 backend/.gradle
+
+frontend/timeline-ui/.eslintcache
 backend/out
 
 # Pem
