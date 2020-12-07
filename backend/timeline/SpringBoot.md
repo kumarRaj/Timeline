@@ -69,3 +69,13 @@ A DispatcherServlet is to take an incoming URI and find the right combination of
 
 ComponentScan for classes with the following annotations @Controller, @Service, ....
 Bean class should also be defined as bean, using @Service or any other annotations.
+
+All Spring beans are managed - they "live" inside a container, called "application context".
+
+Each application has an entry point to that context.
+
+Autowiring happens by placing an instance of one bean into the desired field in an instance of 
+another bean. Both classes should be beans, i.e. they should be defined to live in the application context.
+
+"living" in the application context? This means that the context instantiates the objects, not you. i.e. - you 
+never make new ObjectImpl() - the container finds each injection point and sets an instance there.

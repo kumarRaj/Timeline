@@ -20,8 +20,5 @@ public class LikeTable {
     @OneToOne
     private Post post;
 
-    public LikeTable(User likedBy, Post post) {
-        this.likedBy = likedBy;
-        this.post = post;
-    }
+
 }

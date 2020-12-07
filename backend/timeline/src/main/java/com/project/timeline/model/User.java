@@ -2,6 +2,7 @@ package com.project.timeline.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -14,6 +15,7 @@ import java.sql.Date;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class User {
 
     @Id
@@ -33,11 +35,10 @@ public class User {
 
     private Date dateOfBirth;
 
-    public User(String firstName, String lastName, String emailId, String password, String phoneNumber, Date dateOfBirth) {
+    public User(String firstName, String lastName, String emailId, String phoneNumber, Date dateOfBirth) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.emailId = emailId;
-        this.password = password;
         this.phoneNumber = phoneNumber;
         this.dateOfBirth = dateOfBirth;
     }

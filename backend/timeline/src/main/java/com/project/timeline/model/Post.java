@@ -2,12 +2,16 @@ package com.project.timeline.model;
 
 import javax.persistence.*;
 import java.sql.Date;
+import java.util.Objects;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
 public class Post {
 
     @Id
@@ -23,11 +27,9 @@ public class Post {
 
     private String body;
 
-    public Post(User createdBy, Date createdTime, Date modifiedTime, String body) {
-        this.createdBy = createdBy;
-        this.createdTime = createdTime;
-        this.modifiedTime = modifiedTime;
-        this.body = body;
+    @PrePersist
+    protected void onCreate() {
+        this.createdTime = new Date(System.currentTimeMillis());
     }
 
 }
