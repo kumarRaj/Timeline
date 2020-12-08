@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: timeline-deployment
+  labels:
+    app: timeline
+    type: back-end
+spec:
+  template:
+    metadata:
+      name: timeline-backend-pod
+      labels:
+        app: timeline-backend
+        type: back-end
+    spec:
+      containers:
+        - name: mysql-image
+          image: mysql:5.7
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: 
+            - name: MYSQL_DATABASE
+              value: timeline
+          ports:
+            - containerPort: 3306
+              name: mysql
+        - name: timelineapp
+          image: sunandanbose/timelineapp
+          env:
+            - name: MYSQL_DB_HOST
+              value: localhost
+            - name: MYSQL_DB_PORT
+              value: 3306
+            - name: MYSQL_DB_SCHEMA
+              value: timeline
+            - name: MYSQL_DB_USERNAME
+              value: root
+            - name: MYSQL_DB_PASSWORD
+              value:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: timeline-backend
