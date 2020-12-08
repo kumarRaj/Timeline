@@ -17,7 +17,7 @@ class UserServiceTest {
         UserRepository userRepository = mock(UserRepository.class);
         UserService userService = new UserService(userRepository);
         User input = new User("abcd", "abcd", "user#domain.com", "", null);
-
+        input.setPassword("1234567");
         // Action
         User user = userService.save(input);
 
@@ -32,7 +32,7 @@ class UserServiceTest {
         UserRepository userRepository = mock(UserRepository.class);
         UserService userService = new UserService(userRepository);
         User input = new User("abcd", "abcd", "user@domain.com", "", null);
-
+        input.setPassword("1234567");
         // Action
         User user = userService.save(input);
 

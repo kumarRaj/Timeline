@@ -6,14 +6,4 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TimelineServiceTest {
 
-    @Test
-    void shouldReturnFalseForInvalidEmail() {
-        // Setup
-        TimelineService timelineService = new TimelineService();
-
-        // Action
-
-        // Assertion
-
-    }
 }

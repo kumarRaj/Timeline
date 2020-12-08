@@ -6,7 +6,6 @@ import com.project.timeline.model.User;
 import com.project.timeline.repository.LikeTableRepository;
 import com.project.timeline.repository.PostRepository;
 import com.project.timeline.repository.UserRepository;
-import javafx.geometry.Pos;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
