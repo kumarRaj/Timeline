@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: timeline-deployment
   labels:
-    app: timeline
+    app: timeline-backend
     type: back-end
 spec:
   template:
@@ -18,9 +18,9 @@ spec:
           image: mysql:5.7
           env:
             - name: MYSQL_ROOT_PASSWORD
-              value: 
+              value:
             - name: MYSQL_DATABASE
-              value: timeline
+              value: "timeline"
           ports:
             - containerPort: 3306
               name: mysql
@@ -28,13 +28,13 @@ spec:
           image: sunandanbose/timelineapp
           env:
             - name: MYSQL_DB_HOST
-              value: localhost
+              value: "localhost"
             - name: MYSQL_DB_PORT
-              value: 3306
+              value: "3306"
             - name: MYSQL_DB_SCHEMA
-              value: timeline
+              value: "timeline"
             - name: MYSQL_DB_USERNAME
-              value: root
+              value: "root"
             - name: MYSQL_DB_PASSWORD
               value:
   replicas: 3
