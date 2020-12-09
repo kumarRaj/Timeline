@@ -17,31 +17,28 @@ public class TimelineController {
     private TimelineService timelineService;
 
     @PostMapping(value = "/create")
-    public Post create(@RequestBody Post post){
+    public Post create(@RequestBody Post post) {
         return timelineService.create(post);
     }
 
     @PostMapping(value = "/like")
-    private void like(@RequestBody LikeTable like){
+    private void like(@RequestBody LikeTable like) {
         timelineService.toggleLike(like);
     }
 
     @GetMapping(value = "{postId}/like")
-    private Integer countLikesInAPost(@PathVariable Integer postId){
+    private Integer countLikesInAPost(@PathVariable Integer postId) {
         return timelineService.countLikesInAPost(postId);
     }
 
     @PostMapping(value = "/comment")
-    private void comment(@RequestBody Comment comment){
+    private void comment(@RequestBody Comment comment) {
         timelineService.addComment(comment);
     }
 
     @GetMapping(value = "{postId}/comment")
-    private List<Comment> getCommentsForPost(@PathVariable Integer postId){
+    private List<Comment> getCommentsForPost(@PathVariable Integer postId) {
         return timelineService.getCommentsForPost(postId);
     }
-
-
-
 
 }

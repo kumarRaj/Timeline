@@ -47,33 +47,45 @@ public class TimelineService {
     }
 
     public void toggleLike(LikeTable like) {
-        like.setLikedBy(userRepository.findById(like.getLikedBy().getId()).get());
-        like.setPost(postRepository.findById(like.getPost().getId()).get());
-        List<LikeTable> byPostAndLikedBy = likeTableRepository.findByPostAndLikedBy(like.getPost(), like.getLikedBy());
-        if(byPostAndLikedBy.size() == 0)
-            likeTableRepository.save(like);
-        else{
-            Integer likeId = byPostAndLikedBy.get(0).getId();
-            likeTableRepository.deleteById(likeId);
+        Integer userId = like.getLikedBy().getId();
+        Integer postId = like.getPost().getId();
+        if (userId != null && postId != null) {
+            Optional<User> user = userRepository.findById(userId);
+            Optional<Post> post = postRepository.findById(postId);
+            if (user.isPresent() && post.isPresent()) {
+                like.setLikedBy(user.get());
+                like.setPost(post.get());
+                List<LikeTable> byPostAndLikedBy = likeTableRepository.findByPostAndLikedBy(like.getPost(), like.getLikedBy());
+                if (byPostAndLikedBy.size() == 0)
+                    likeTableRepository.save(like);
+                else {
+                    Integer likeId = byPostAndLikedBy.get(0).getId();
+                    likeTableRepository.deleteById(likeId);
+                }
+            }
         }
     }
 
     public Integer countLikesInAPost(Integer postId) {
-        Post post = postRepository.findById(postId).get();
-        return likeTableRepository.findByPost(post).size();
+        Optional<Post> post = postRepository.findById(postId);
+        if (post.isPresent())
+            return likeTableRepository.findByPost(post.get()).size();
+        return 0;
     }
 
-    public boolean hasUserLikedPost(Integer userId, Integer postid){
-        User user = userRepository.findById(userId).get();
-        Post post = postRepository.findById(postid).get();
-        return likeTableRepository.findByPostAndLikedBy(post,user).size() > 0 ? true : false;
+    public boolean hasUserLikedPost(Integer userId, Integer postid) {
+        Optional<User> user = userRepository.findById(userId);
+        Optional<Post> post = postRepository.findById(postid);
+        if (user.isPresent() && post.isPresent())
+            return likeTableRepository.findByPostAndLikedBy(post.get(), user.get()).size() > 0 ? true : false;
+        return false;
     }
 
     public void addComment(Comment comment) {
-        if(comment.getCommentedBy().getId() != null && comment.getPost().getId() != null) {
+        if (comment.getCommentedBy().getId() != null && comment.getPost().getId() != null) {
             Optional<User> user = userRepository.findById(comment.getCommentedBy().getId());
             Optional<Post> post = postRepository.findById(comment.getPost().getId());
-            if(user.isPresent() && post.isPresent()) {
+            if (user.isPresent() && post.isPresent()) {
                 comment.setCommentedBy(user.get());
                 comment.setPost(post.get());
                 commentRepository.save(comment);
@@ -83,11 +95,9 @@ public class TimelineService {
 
     public List<Comment> getCommentsForPost(Integer postId) {
         List<Comment> comments = new ArrayList<>();
-
         Optional<Post> post = postRepository.findById(postId);
         if (post.isPresent())
             comments.addAll(commentRepository.findByPost(post.get()));
-
         return comments;
     }
 }

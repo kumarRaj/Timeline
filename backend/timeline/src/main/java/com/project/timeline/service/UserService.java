@@ -23,21 +23,22 @@ public class UserService {
             Pattern.compile("^(.+)@(.+)$");
 
     public User save(User user) {
-        if(validate(user))
+        if (validate(user))
             return userRepository.save(user);
         return null;
     }
 
-    private boolean validate(User user){
-
-        if(user.getFirstName().equals("") || user.getFirstName().length() < 3)
+    private boolean validate(User user) {
+        if (user == null)
             return false;
-        if(user.getLastName().equals("") || user.getLastName().length() < 3)
+        if (user.getFirstName().equals("") || user.getFirstName().length() < 3)
+            return false;
+        if (user.getLastName().equals("") || user.getLastName().length() < 3)
             return false;
         Matcher matcher = VALID_EMAIL_ADDRESS_REGEX.matcher(user.getEmailId());
-        if(user.getEmailId().equals("") || !matcher.matches() )
+        if (user.getEmailId().equals("") || !matcher.matches())
             return false;
-        if(user.getPassword().equals("") || user.getPassword().length() < 6)
+        if (user.getPassword().equals("") || user.getPassword().length() < 6)
             return false;
         return true;
     }
