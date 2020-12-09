@@ -17,14 +17,9 @@ public class Comment {
     private String comment;
 
     @ManyToOne
-    private User user;
+    private User commentedBy;
 
     @OneToOne
     private Post post;
 
-    public Comment(String comment, User user, Post post) {
-        this.comment = comment;
-        this.user = user;
-        this.post = post;
-    }
 }

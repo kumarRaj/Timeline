@@ -1,15 +1,19 @@
 package com.project.timeline.service;
 
+import com.project.timeline.model.Comment;
 import com.project.timeline.model.LikeTable;
 import com.project.timeline.model.Post;
 import com.project.timeline.model.User;
+import com.project.timeline.repository.CommentRepository;
 import com.project.timeline.repository.LikeTableRepository;
 import com.project.timeline.repository.PostRepository;
 import com.project.timeline.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TimelineService {
@@ -20,11 +24,14 @@ public class TimelineService {
 
     private LikeTableRepository likeTableRepository;
 
+    private CommentRepository commentRepository;
+
     @Autowired
-    public TimelineService(PostRepository postRepository, UserRepository userRepository, LikeTableRepository likeTableRepository) {
+    public TimelineService(PostRepository postRepository, UserRepository userRepository, LikeTableRepository likeTableRepository, CommentRepository commentRepository) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.likeTableRepository = likeTableRepository;
+        this.commentRepository = commentRepository;
     }
 
     public Post create(Post post) {
@@ -60,5 +67,27 @@ public class TimelineService {
         User user = userRepository.findById(userId).get();
         Post post = postRepository.findById(postid).get();
         return likeTableRepository.findByPostAndLikedBy(post,user).size() > 0 ? true : false;
+    }
+
+    public void addComment(Comment comment) {
+        if(comment.getCommentedBy().getId() != null && comment.getPost().getId() != null) {
+            Optional<User> user = userRepository.findById(comment.getCommentedBy().getId());
+            Optional<Post> post = postRepository.findById(comment.getPost().getId());
+            if(user.isPresent() && post.isPresent()) {
+                comment.setCommentedBy(user.get());
+                comment.setPost(post.get());
+                commentRepository.save(comment);
+            }
+        }
+    }
+
+    public List<Comment> getCommentsForPost(Integer postId) {
+        List<Comment> comments = new ArrayList<>();
+
+        Optional<Post> post = postRepository.findById(postId);
+        if (post.isPresent())
+            comments.addAll(commentRepository.findByPost(post.get()));
+
+        return comments;
     }
 }
