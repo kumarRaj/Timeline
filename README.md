@@ -34,6 +34,7 @@ Deadline - 23rd Dec
 
 
 
+
 ## Class
 - User
     - String firstname
@@ -172,3 +173,6 @@ Response :
     - Push in dockerhub
     - setup GKE
     - configure your project in GKE
+    
+19th December - 7 pm
+
