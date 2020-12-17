@@ -1,9 +1,6 @@
 package com.project.timeline.service;
 
-import com.project.timeline.model.Comment;
-import com.project.timeline.model.LikeTable;
-import com.project.timeline.model.Post;
-import com.project.timeline.model.User;
+import com.project.timeline.model.*;
 import com.project.timeline.repository.CommentRepository;
 import com.project.timeline.repository.LikeTableRepository;
 import com.project.timeline.repository.PostRepository;
@@ -99,5 +96,18 @@ public class TimelineService {
         if (post.isPresent())
             comments.addAll(commentRepository.findByPost(post.get()));
         return comments;
+    }
+
+    public List<PostWrapper> getTimelineOfUser(Integer userId) {
+        List<PostWrapper> posts = new ArrayList<>();
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()){
+            List<Post> postList = postRepository.findByCreatedBy(user.get());
+            for(Post post : postList){
+                int likeCount = likeTableRepository.countLikesInAPost(post.getId());
+                posts.add(new PostWrapper(user.get().getId(), post.getId(), likeCount, post.getBody()));
+            }
+        }
+        return posts;
     }
 }
