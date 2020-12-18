@@ -6,7 +6,7 @@ function Posts () {
   const [like, setLike] = useState(0)
   const [comment, setComment] = useState('')
   const [posts, setPosts] = useState([])
-  const [userId, setUserId] = useState(1)
+  const [userId, setUserId] = useState(4)
 
   useEffect(async () => {
     var requestOptions = {
@@ -26,7 +26,7 @@ function Posts () {
 
   return (
     // <div></div>
-    <div>
+    <div >
       <CreatePost userId={userId} />
       {posts && posts.map((post, i) => <Post key={i} post={post} />)}
     </div>

@@ -10,7 +10,9 @@ const useStyles = makeStyles(theme => ({
   paper: {
     margin: '10px',
     padding: 10,
-    color: theme.palette.text.secondary
+    color: theme.palette.text.secondary,
+    boxShadow:
+      '0 14px 5px 0 rgba(0, 0, 0, 0.3), 0 26px 30px 0 rgba(0, 0, 0, 0.50)'
   }
 }))
 

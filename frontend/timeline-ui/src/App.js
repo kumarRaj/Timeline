@@ -7,8 +7,8 @@ import Posts from './components/Posts'
 function App () {
   return (
     <div className='App'>
-      {/* <Routes /> */}
-      <Posts />
+      <Routes />
+      {/* <Posts /> */}
     </div>
   )
 }
