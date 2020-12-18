@@ -101,11 +101,15 @@ public class TimelineService {
     public List<PostWrapper> getTimelineOfUser(Integer userId) {
         List<PostWrapper> posts = new ArrayList<>();
         Optional<User> user = userRepository.findById(userId);
-        if (user.isPresent()){
+        if (user.isPresent()) {
             List<Post> postList = postRepository.findByCreatedBy(user.get());
-            for(Post post : postList){
+            for (Post post : postList) {
                 int likeCount = likeTableRepository.countLikesInAPost(post.getId());
-                posts.add(new PostWrapper(user.get().getId(), post.getId(), likeCount, post.getBody()));
+                PostWrapper postWrapper = new PostWrapper(user.get().getId(), user.get().getFirstName(), post.getId(), likeCount, post.getBody());
+                List<LikeTable> tempList = likeTableRepository.findByPostAndLikedBy(post, user.get());
+                if(tempList != null && tempList.size() > 0)
+                    postWrapper.setIsLikedByUser(true);
+                posts.add(postWrapper);
             }
         }
         return posts;

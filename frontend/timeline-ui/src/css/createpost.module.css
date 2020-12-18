@@ -1,0 +1,10 @@
+.createpost {
+  display: flex;
+  align-content: center;
+  margin: '10px';
+}
+
+.createpost__button {
+  flex: 0;
+  padding: '10px';
+}

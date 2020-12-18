@@ -1,0 +1,23 @@
+.post {
+  display: flex;
+  align-content: center;
+  margin: '10px';
+}
+
+.post__like {
+  display: flex;
+  align-content: center;
+}
+
+.post__comment {
+  display: flex;
+  align-content: center;
+}
+
+.post__input {
+  flex: 1;
+}
+.post__button {
+  flex: 0;
+  padding: 10;
+}
