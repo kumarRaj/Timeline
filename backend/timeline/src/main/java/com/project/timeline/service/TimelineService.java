@@ -90,12 +90,17 @@ public class TimelineService {
         }
     }
 
-    public List<Comment> getCommentsForPost(Integer postId) {
+    public List<CommentWrapper> getCommentsForPost(Integer postId) {
         List<Comment> comments = new ArrayList<>();
+        List<CommentWrapper> commentWrappers = new ArrayList<>();
         Optional<Post> post = postRepository.findById(postId);
-        if (post.isPresent())
-            comments.addAll(commentRepository.findByPost(post.get()));
-        return comments;
+        if (post.isPresent()) {
+            comments = commentRepository.findByPost(post.get());
+            for(Comment comment: comments){
+                commentWrappers.add(new CommentWrapper(comment.getCommentedBy().getId(), comment.getPost().getId(), comment.getCommentedBy().getFirstName(), comment.getComment()));
+            }
+        }
+        return commentWrappers;
     }
 
     public List<PostWrapper> getTimelineOfUser(Integer userId) {

@@ -3,6 +3,8 @@ import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Grid from '@material-ui/core/Grid'
 import styles from '../css/post.module.css'
+import Modal from '@material-ui/core/Modal'
+import Comments from './Comments'
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -14,12 +16,14 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+
 function Post ({ post }) {
   let { username, body, likesCount, isLikedByUser } = post
   const classes = useStyles()
   let [like, setLike] = useState(likesCount)
   let [isLiked, setisLiked] = useState(isLikedByUser)
   let [comment, setComment] = useState('')
+  const [openComment, setOpenComment] = useState(false)
 
   const submitComment = () => {
     var myHeaders = new Headers()
@@ -44,6 +48,10 @@ function Post ({ post }) {
         window.location.reload()
       })
       .catch(error => console.log('error', error))
+  }
+
+  const handleClose = () => {
+    setOpenComment(false)
   }
 
   const handleLike = () => {
@@ -103,6 +111,7 @@ function Post ({ post }) {
               src='https://www.flaticon.com/svg/static/icons/svg/2462/2462719.svg'
               height='30px'
               alt='Comment'
+              onClick={() => setOpenComment(true)}
             />
           </div>
           <div className={styles.post__comment}>
@@ -122,6 +131,9 @@ function Post ({ post }) {
         </Paper>
       </Grid>
       <Grid item xs={4} />
+      <Modal open={openComment} onClose={handleClose}>
+        <Comments postId={post.postId} />
+      </Modal>
     </div>
   )
 }
