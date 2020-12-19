@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/post")
-public class TimelineController {
+public class PostService {
 
     @Autowired
     private TimelineService timelineService;
