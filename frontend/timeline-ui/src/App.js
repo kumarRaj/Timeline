@@ -2,13 +2,13 @@ import React from 'react'
 import './App.css'
 import SignIn from './components/SignIn'
 import Routes from './components/Routes'
-import Posts from './components/Posts'
+import Search from './components/Search'
 
 function App () {
   return (
     <div className='App'>
       <Routes />
-      {/* <Posts /> */}
+      {/* <Search /> */}
     </div>
   )
 }

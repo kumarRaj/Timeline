@@ -41,7 +41,7 @@ function CreatePost ({ userId }) {
       .then(res => res.json())
       .then(json => {
         console.log('Blog Created', json)
-        setBlogBody('')
+        window.location.reload()
       })
       .catch(e => console.log(e))
   }

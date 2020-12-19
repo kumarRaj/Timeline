@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Post from './Post'
 import CreatePost from './CreatePost'
+import Search from './Search'
 
 function Posts () {
   const [like, setLike] = useState(0)
   const [comment, setComment] = useState('')
   const [posts, setPosts] = useState([])
-  const [userId, setUserId] = useState(4)
+  const [userId, setUserId] = useState(1)
 
   useEffect(async () => {
     var requestOptions = {
@@ -26,7 +27,8 @@ function Posts () {
 
   return (
     // <div></div>
-    <div >
+    <div>
+      <Search />
       <CreatePost userId={userId} />
       {posts && posts.map((post, i) => <Post key={i} post={post} />)}
     </div>

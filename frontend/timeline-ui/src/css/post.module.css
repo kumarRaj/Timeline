@@ -7,6 +7,7 @@
 .post__like {
   display: flex;
   align-content: center;
+  margin: '10%';
 }
 
 .post__comment {
@@ -20,4 +21,8 @@
 .post__button {
   flex: 0;
   padding: 10;
+}
+
+.post__like_comment {
+  display: flex;
 }
