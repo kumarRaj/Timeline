@@ -4,6 +4,7 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import TextField from "@material-ui/core/TextField";
+import { hostname, port } from "../constants/properties";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,7 +48,7 @@ function getModalStyle() {
     transform: `translate(-${top}%, -${left}%)`,
   };
 }
-
+console.log(hostname, port);
 function SignUp() {
   const classes = useStyles();
   const [firstName, setFirstName] = useState("");
@@ -78,8 +79,8 @@ function SignUp() {
       body: raw,
       redirect: "follow",
     };
-
-    fetch("http://localhost:8080/signUp", requestOptions)
+    console.log("http://" + hostname + ":" + port + "/signUp");
+    fetch("http://" + hostname + ":" + port + "/signUp", requestOptions)
       .then((response) => response.text())
       .then((result) => console.log(result))
       .catch((error) => console.log("error", error));

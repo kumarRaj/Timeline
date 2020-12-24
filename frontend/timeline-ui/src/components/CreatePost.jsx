@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid'
 import styles from '../css/createpost.module.css'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import { hostname, port } from "../constants/properties";
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -37,7 +38,7 @@ function CreatePost ({ userId }) {
       redirect: 'follow'
     }
 
-    fetch('http://localhost:8080/post/create', requestOptions)
+    fetch("http://" + hostname + ":" + port + "/post/create", requestOptions)
       .then(res => res.json())
       .then(json => {
         console.log('Blog Created', json)

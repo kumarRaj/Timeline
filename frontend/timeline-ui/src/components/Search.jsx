@@ -9,6 +9,7 @@ import InputLabel from '@material-ui/core/InputLabel'
 import FormControl from '@material-ui/core/FormControl'
 import TextField from '@material-ui/core/TextField'
 import Button from '@material-ui/core/Button'
+import { hostname, port } from "../constants/properties";
 
 const useStyles = makeStyles(theme => ({
   formControl: {
@@ -50,7 +51,7 @@ function Search () {
     }
 
     fetch(
-      'http://localhost:8080/search/' + searchCriteria + '?query=' + query,
+      "http://" + hostname + ":" + port + "/search/" + searchCriteria + "?query=" + query,
       requestOptions
     )
       .then(res => res.json())
