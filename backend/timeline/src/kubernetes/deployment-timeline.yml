@@ -37,6 +37,8 @@ spec:
               value: "root"
             - name: MYSQL_DB_PASSWORD
               value:
+        - name: timelineuiapp
+          image: sunandanbose/timelineuiapp
   replicas: 3
   selector:
     matchLabels:
