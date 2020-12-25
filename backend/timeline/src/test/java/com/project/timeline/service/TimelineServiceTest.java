@@ -266,7 +266,7 @@ class TimelineServiceTest {
         verify(userRepository).findById(user.getId());
         verify(postRepository).findByCreatedBy(user);
         verify(likeTableRepository).countLikesInAPost(post.getId());
-        verify(likeTableRepository).findByPostAndLikedBy(post,user);
+        verify(likeTableRepository).findByPostAndLikedBy(post, user);
 
     }
 
