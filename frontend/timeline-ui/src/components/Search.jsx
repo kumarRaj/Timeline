@@ -43,23 +43,25 @@ function Search () {
   const classes = useStyles()
   let [searchCriteria, setSearchCriteria] = useState('Blog')
   let [query, setQuery] = useState('')
-  const search = () => {
+  let [searchResults, setSearchResults] = useState([])
+  const search = async () => {
     console.log(searchCriteria, query)
     var requestOptions = {
       method: 'GET',
       redirect: 'follow'
     }
 
-    fetch(
+    await fetch(
       "http://" + hostname + ":" + port + "/search/" + searchCriteria + "?query=" + query,
       requestOptions
     )
       .then(res => res.json())
       .then(json => {
-        console.log(json)
+        setSearchResults(json)
       })
       .catch(e => console.log(e))
   }
+  console.log("searchResults", searchResults)
   return (
     <div className={styles.search}>
       <Grid item xs={4} />
@@ -73,7 +75,7 @@ function Search () {
               className={classes.select}
               labelId='demo-simple-select-filled-label'
               id='demo-simple-select-filled'
-              value='search'
+              value={searchCriteria}
               onChange={e => setSearchCriteria(e.target.value)}
             >
               <MenuItem value='blog'>Blog</MenuItem>
