@@ -1,4 +1,4 @@
-package com.project.timeline.Controller;
+package com.project.timeline.controller;
 
 import com.project.timeline.model.User;
 import com.project.timeline.service.UserService;
