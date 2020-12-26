@@ -15,8 +15,12 @@ import java.util.List;
 @RequestMapping(value = "/search")
 public class SearchController {
 
-    @Autowired
     private SearchService searchService;
+
+    @Autowired
+    public SearchController(SearchService searchService) {
+        this.searchService = searchService;
+    }
 
     @GetMapping(value = "/blog")
     private List<Post> searchBlog(@RequestParam(name = "query") String query){

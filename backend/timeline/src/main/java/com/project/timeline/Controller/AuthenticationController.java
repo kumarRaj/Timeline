@@ -10,8 +10,12 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class AuthenticationController {
 
-    @Autowired
     private UserService userService;
+
+    @Autowired
+    public AuthenticationController(UserService userService) {
+        this.userService = userService;
+    }
 
     @PostMapping(value = "/signUp")
     private User save(@RequestBody User user) {

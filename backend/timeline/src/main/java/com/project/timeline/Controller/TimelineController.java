@@ -11,8 +11,12 @@ import java.util.List;
 @RequestMapping(value = "/post")
 public class TimelineController {
 
-    @Autowired
     private TimelineService timelineService;
+
+    @Autowired
+    public TimelineController(TimelineService timelineService) {
+        this.timelineService = timelineService;
+    }
 
     @PostMapping(value = "/create")
     public Post create(@RequestBody Post post) {
