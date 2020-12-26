@@ -32,7 +32,7 @@ function Posts() {
   return (
     // <div></div>
     <div>
-      <Search />
+      
       <CreatePost userId={userId} />
       {posts && posts.map((post, i) => <Post key={i} post={post} />)}
     </div>
