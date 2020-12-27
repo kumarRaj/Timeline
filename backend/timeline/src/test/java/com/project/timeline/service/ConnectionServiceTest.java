@@ -130,7 +130,7 @@ class ConnectionServiceTest extends TestCase {
         when(userRepository.findById(1)).thenReturn(Optional.of(loggedinUser));
         when(userRepository.findById(4)).thenReturn(Optional.of(followerUser));
         when(followerRepository.findByLoggedInUserAndFollower(loggedinUser, followerUser)).thenReturn(Collections.singletonList(follower));
-        connectionService.unFollowUser(1, 4);
+        connectionService.unFollowUser(follower);
         verify(followerRepository).deleteById(5);
     }
 
@@ -143,7 +143,7 @@ class ConnectionServiceTest extends TestCase {
         when(userRepository.findById(1)).thenReturn(Optional.of(loggedinUser));
         when(userRepository.findById(4)).thenReturn(Optional.of(followerUser));
         when(followerRepository.findByLoggedInUserAndFollower(loggedinUser, followerUser)).thenReturn(Collections.emptyList());
-        connectionService.unFollowUser(1, 4);
+        connectionService.unFollowUser(follower);
         verify(followerRepository,times(0)).deleteById(5);
     }
 

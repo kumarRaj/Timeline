@@ -1,28 +1,52 @@
 package com.project.timeline.service;
 
 import com.project.timeline.model.*;
-import com.project.timeline.repository.CommentRepository;
-import com.project.timeline.repository.LikeTableRepository;
-import com.project.timeline.repository.PostRepository;
-import com.project.timeline.repository.UserRepository;
+import com.project.timeline.repository.*;
+import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class TimelineServiceTest {
+class TimelineServiceTest extends TestCase {
+
+    private TimelineService timelineService;
+    private PostRepository postRepository;
+    private UserRepository userRepository;
+    private LikeTableRepository likeTableRepository;
+    private CommentRepository commentRepository;
+    private FollowerRepository followerRepository;
+    private ConnectionService connectionService;
+
+    @BeforeEach
+    public void setUp(){
+        postRepository = mock(PostRepository.class);
+        userRepository = mock(UserRepository.class);
+        commentRepository = mock(CommentRepository.class);
+        likeTableRepository = mock(LikeTableRepository.class);
+        followerRepository = mock(FollowerRepository.class);
+        connectionService = new ConnectionService(followerRepository, userRepository);
+        timelineService = new TimelineService(postRepository, userRepository, likeTableRepository, commentRepository, connectionService);
+    }
+
+    @AfterEach
+    public void tearDown(){
+        timelineService = null;
+        postRepository = null;
+        userRepository = null;
+        likeTableRepository = null;
+        commentRepository = null;
+        followerRepository = null;
+    }
 
     @Test
     public void testIfBodyIsPresentValidateMethodReturnTrue() {
         Post post = new Post();
         post.setBody("Test Body");
-        PostRepository postRepository = mock(PostRepository.class);
-        TimelineService timelineService = new TimelineService(postRepository, null, null, null);
         assertTrue(timelineService.validate(post));
     }
 
@@ -30,17 +54,13 @@ class TimelineServiceTest {
     public void testIfBodyIsNotPresentValidateMethodReturnFalse() {
         Post post = new Post();
         post.setBody("");
-        PostRepository postRepository = mock(PostRepository.class);
-        TimelineService timelineService = new TimelineService(postRepository, null, null, null);
         assertFalse(timelineService.validate(post));
     }
 
     @Test
     public void testIfPostIsValidSavePost() {
-        PostRepository postRepository = mock(PostRepository.class);
         Post post = new Post();
         post.setBody("Test Body");
-        TimelineService timelineService = new TimelineService(postRepository, null, null, null);
         timelineService.create(post);
         verify(postRepository, times(1)).save(post);
 
@@ -53,16 +73,12 @@ class TimelineServiceTest {
         user.setId(1);
         Post post = new Post();
         post.setId(1);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
-        UserRepository userRepository = mock(UserRepository.class);
-        PostRepository postRepository = mock(PostRepository.class);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         when(likeTableRepository.findByPostAndLikedBy(post, user)).thenReturn(Collections.emptyList());
         LikeTable likeTable = new LikeTable();
         likeTable.setPost(post);
         likeTable.setLikedBy(user);
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, likeTableRepository, null);
         timelineService.toggleLike(likeTable);
         verify(likeTableRepository, times(1)).save(likeTable);
     }
@@ -77,37 +93,26 @@ class TimelineServiceTest {
         likeTable.setPost(post);
         likeTable.setLikedBy(user);
         likeTable.setId(1);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
-        UserRepository userRepository = mock(UserRepository.class);
-        PostRepository postRepository = mock(PostRepository.class);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         when(likeTableRepository.findByPostAndLikedBy(post, user)).thenReturn(Collections.singletonList(likeTable));
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, likeTableRepository, null);
         timelineService.toggleLike(likeTable);
         verify(likeTableRepository, times(1)).deleteById(1);
     }
 
     @Test
     public void testIfPostIsPresentCalculateCount() {
-        PostRepository postRepository = mock(PostRepository.class);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
         Post post = new Post();
         post.setId(1);
-        TimelineService timelineService = new TimelineService(postRepository, null, likeTableRepository, null);
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         timelineService.countLikesInAPost(1);
-
         verify(likeTableRepository, times(1)).findByPost(post);
     }
 
     @Test
     public void testIfPostIsNotPresentDontCalculateCount() {
-        PostRepository postRepository = mock(PostRepository.class);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
         Post post = new Post();
         post.setId(1);
-        TimelineService timelineService = new TimelineService(postRepository, null, likeTableRepository, null);
         when(postRepository.findById(1)).thenReturn(Optional.empty());
         timelineService.countLikesInAPost(1);
         verify(likeTableRepository, times(0)).findByPost(post);
@@ -115,13 +120,9 @@ class TimelineServiceTest {
 
     @Test
     public void testIfUserHasLikedPostReturnTrue() {
-        PostRepository postRepository = mock(PostRepository.class);
-        UserRepository userRepository = mock(UserRepository.class);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
         User user = new User();
         Post post = new Post();
         LikeTable likeTable = new LikeTable();
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, likeTableRepository, null);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         when(likeTableRepository.findByPostAndLikedBy(post, user)).thenReturn(Collections.singletonList(likeTable));
@@ -131,13 +132,9 @@ class TimelineServiceTest {
 
     @Test
     public void testIfUserHasNotLikedPostReturnFalse() {
-        PostRepository postRepository = mock(PostRepository.class);
-        UserRepository userRepository = mock(UserRepository.class);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
         User user = new User();
         Post post = new Post();
         LikeTable likeTable = new LikeTable();
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, likeTableRepository, null);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         assertFalse(timelineService.hasUserLikedPost(1, 1));
@@ -146,13 +143,9 @@ class TimelineServiceTest {
 
     @Test
     public void testIfUserIsNotPresentHasLikedPostReturnFalse() {
-        PostRepository postRepository = mock(PostRepository.class);
-        UserRepository userRepository = mock(UserRepository.class);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
         Post post = new Post();
         User user = new User();
         LikeTable likeTable = new LikeTable();
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, likeTableRepository, null);
         when(userRepository.findById(1)).thenReturn(Optional.empty());
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         assertFalse(timelineService.hasUserLikedPost(1, 1));
@@ -161,13 +154,9 @@ class TimelineServiceTest {
 
     @Test
     public void testIfPostIsNotPresentHasLikedPostReturnFalse() {
-        PostRepository postRepository = mock(PostRepository.class);
-        UserRepository userRepository = mock(UserRepository.class);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
         User user = new User();
         Post post = new Post();
         LikeTable likeTable = new LikeTable();
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, likeTableRepository, null);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(postRepository.findById(1)).thenReturn(Optional.empty());
         assertFalse(timelineService.hasUserLikedPost(1, 1));
@@ -183,10 +172,6 @@ class TimelineServiceTest {
         Comment comment = new Comment();
         comment.setCommentedBy(user);
         comment.setPost(post);
-        UserRepository userRepository = mock(UserRepository.class);
-        PostRepository postRepository = mock(PostRepository.class);
-        CommentRepository commentRepository = mock(CommentRepository.class);
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, null, commentRepository);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         timelineService.addComment(comment);
@@ -202,10 +187,6 @@ class TimelineServiceTest {
         Comment comment = new Comment();
         comment.setCommentedBy(user);
         comment.setPost(post);
-        UserRepository userRepository = mock(UserRepository.class);
-        PostRepository postRepository = mock(PostRepository.class);
-        CommentRepository commentRepository = mock(CommentRepository.class);
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, null, commentRepository);
         when(userRepository.findById(1)).thenReturn(Optional.empty());
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         timelineService.addComment(comment);
@@ -221,10 +202,6 @@ class TimelineServiceTest {
         Comment comment = new Comment();
         comment.setCommentedBy(user);
         comment.setPost(post);
-        UserRepository userRepository = mock(UserRepository.class);
-        PostRepository postRepository = mock(PostRepository.class);
-        CommentRepository commentRepository = mock(CommentRepository.class);
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, null, commentRepository);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(postRepository.findById(1)).thenReturn(Optional.empty());
         timelineService.addComment(comment);
@@ -234,9 +211,6 @@ class TimelineServiceTest {
     @Test
     public void testGetCommentsForPostForValidPostId() {
         Post post = new Post();
-        CommentRepository commentRepository = mock(CommentRepository.class);
-        PostRepository postRepository = mock(PostRepository.class);
-        TimelineService timelineService = new TimelineService(postRepository, null, null, commentRepository);
         when(postRepository.findById(1)).thenReturn(Optional.of(post));
         assertEquals(Collections.emptyList(), timelineService.getCommentsForPost(1));
         verify(commentRepository, times(1)).findByPost(post);
@@ -248,12 +222,9 @@ class TimelineServiceTest {
         user.setId(1);
         user.setFirstName("FirstName");
         Post post = new Post();
+        post.setCreatedBy(user);
         post.setId(2);
         post.setBody("Body");
-        PostRepository postRepository = mock(PostRepository.class);
-        UserRepository userRepository = mock(UserRepository.class);
-        LikeTableRepository likeTableRepository = mock(LikeTableRepository.class);
-        TimelineService timelineService = new TimelineService(postRepository, userRepository, likeTableRepository, null);
         when(userRepository.findById(1)).thenReturn(Optional.of(user));
         when(postRepository.findByCreatedBy(user)).thenReturn(Collections.singletonList(post));
         when(likeTableRepository.countLikesInAPost(2)).thenReturn(0);

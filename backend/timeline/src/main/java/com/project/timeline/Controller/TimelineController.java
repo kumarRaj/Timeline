@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping(value = "/post")
@@ -46,6 +47,12 @@ public class TimelineController {
     @GetMapping(value = "/timeline/{userId}")
     private List<PostWrapper> getTimelinePosts(@PathVariable Integer userId){
         return timelineService.getTimelineOfUser(userId);
+    }
+
+    @GetMapping(value = "/timeline/{userId}/myfeed")
+    private RestPostsTemplate getHomePageFeed(@PathVariable Integer userId, @RequestParam Optional<Integer> pageId){
+        int pageNum = pageId.orElse(1);
+        return timelineService.getHomePageFeed(userId, pageNum);
     }
 
 }

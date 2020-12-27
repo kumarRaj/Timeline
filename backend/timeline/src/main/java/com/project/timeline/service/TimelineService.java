@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class TimelineService {
@@ -23,12 +24,15 @@ public class TimelineService {
 
     private CommentRepository commentRepository;
 
+    private ConnectionService connectionService;
+
     @Autowired
-    public TimelineService(PostRepository postRepository, UserRepository userRepository, LikeTableRepository likeTableRepository, CommentRepository commentRepository) {
+    public TimelineService(PostRepository postRepository, UserRepository userRepository, LikeTableRepository likeTableRepository, CommentRepository commentRepository, ConnectionService connectionService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.likeTableRepository = likeTableRepository;
         this.commentRepository = commentRepository;
+        this.connectionService = connectionService;
     }
 
     public Post create(Post post) {
@@ -96,7 +100,7 @@ public class TimelineService {
         Optional<Post> post = postRepository.findById(postId);
         if (post.isPresent()) {
             comments = commentRepository.findByPost(post.get());
-            for(Comment comment: comments){
+            for (Comment comment : comments) {
                 commentWrappers.add(new CommentWrapper(comment.getCommentedBy().getId(), comment.getPost().getId(), comment.getCommentedBy().getFirstName(), comment.getComment()));
             }
         }
@@ -108,15 +112,58 @@ public class TimelineService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             List<Post> postList = postRepository.findByCreatedBy(user.get());
-            for (Post post : postList) {
-                int likeCount = likeTableRepository.countLikesInAPost(post.getId());
-                PostWrapper postWrapper = new PostWrapper(user.get().getId(), user.get().getFirstName(), post.getId(), likeCount, post.getBody());
-                List<LikeTable> tempList = likeTableRepository.findByPostAndLikedBy(post, user.get());
-                if(tempList != null && tempList.size() > 0)
-                    postWrapper.setIsLikedByUser(true);
-                posts.add(postWrapper);
-            }
+            posts.addAll(getPostWrapper(postList));
         }
         return posts;
+    }
+
+    public RestPostsTemplate getHomePageFeed(Integer userId, int pageNum) {
+        List<PostWrapper> postWrappers = new ArrayList<>();
+        Optional<User> user = userRepository.findById(userId);
+        RestPostsTemplate restPostWrapperTemplate = new RestPostsTemplate();
+        restPostWrapperTemplate.setPageNumber(pageNum);
+        int totalCount = 0;
+        if (user.isPresent()) {
+            List<User> users = new ArrayList<>();
+            users.addAll(connectionService.getUserFollowing(userId));
+            users.addAll(connectionService.getFollowers(userId));
+            users.add(user.get());
+            List<Integer> userIdList = users.stream().map(User::getId).distinct().collect(Collectors.toList());
+            totalCount = postRepository.getHomePageFeedCount(userIdList);
+            restPostWrapperTemplate.setTotalCount(totalCount);
+            int start = calculateStart(totalCount, pageNum);
+            if (start == -1) return restPostWrapperTemplate;
+            if((start + 9) < totalCount)
+                restPostWrapperTemplate.setHasMore(true);
+            List<Post> posts = postRepository.getHomePageFeed(userIdList, start, start + 9);
+            postWrappers.addAll(getPostWrapper(posts));
+        }
+        restPostWrapperTemplate.setPosts(postWrappers);
+        restPostWrapperTemplate.setPageCount(postWrappers.size());
+        return restPostWrapperTemplate;
+    }
+
+    private int calculateStart(int totalCount, int pageNum) {
+        int start = ((pageNum - 1) * (10)) + 1;
+        if (start < totalCount) return start;
+        return -1;
+    }
+
+    private List<PostWrapper> getPostWrapper(List<Post> posts) {
+        List<PostWrapper> postWrappers = new ArrayList<>();
+        for (int i = 0; i < posts.size(); i++) {
+            Post post = posts.get(i);
+            int userId = post.getCreatedBy().getId();
+            String username = post.getCreatedBy().getFirstName();
+            int postId = post.getId();
+            int likesCount = likeTableRepository.countLikesInAPost(postId);
+            String body = post.getBody();
+            PostWrapper postWrapper = new PostWrapper(userId, username, postId, likesCount, body);
+            List<LikeTable> tempList = likeTableRepository.findByPostAndLikedBy(post, post.getCreatedBy());
+            if (tempList != null && tempList.size() > 0)
+                postWrapper.setIsLikedByUser(true);
+            postWrappers.add(postWrapper);
+        }
+        return postWrappers;
     }
 }

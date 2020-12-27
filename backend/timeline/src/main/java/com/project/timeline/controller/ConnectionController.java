@@ -19,12 +19,12 @@ public class ConnectionController {
         this.connectionService = connectionService;
     }
 
-    @PostMapping(value = "/follower")
+    @PostMapping(value = "/followers")
     private Follower addFollowersForUser(@RequestBody Follower follower) {
         return connectionService.addFollowers(follower);
     }
 
-    @GetMapping(value = "/follower/{loggedInUserId}")
+    @GetMapping(value = "/followers/{loggedInUserId}")
     private List<User> getFollowersOfUser(@PathVariable Integer loggedInUserId) {
         return connectionService.getFollowers(loggedInUserId);
     }
@@ -34,16 +34,15 @@ public class ConnectionController {
         return connectionService.getUserFollowing(loggedInUserId);
     }
 
-    @GetMapping(value = "follower/{loggedInUserId}/follows/{userId}")
+    @GetMapping(value = "followers/{loggedInUserId}/follows/{userId}")
     private boolean isLoggedInUserFollowingUser(@PathVariable(name = "loggedInUserId") Integer loggedInUserId,
                                                 @PathVariable(name = "userId") Integer userId){
         return connectionService.isLoggedInUserFollowingUser(loggedInUserId, userId);
     }
 
-    @DeleteMapping(value = "/{loggedInUserId}/unfollows/{unFollowUserId}")
-    private void unFollowUser(@PathVariable(name = "loggedInUserId") Integer loggedInUserId,
-                                                @PathVariable(name = "unFollowUserId") Integer unFollowUserId){
-        connectionService.unFollowUser(loggedInUserId, unFollowUserId);
+    @DeleteMapping(value = "/followers")
+    private void unFollowUser(@RequestBody Follower follower){
+        connectionService.unFollowUser(follower);
     }
 
 }

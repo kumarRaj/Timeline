@@ -61,13 +61,15 @@ public class ConnectionService {
         return isConnected;
     }
 
-    public void unFollowUser(Integer loggedInUserId, Integer unFollowUserId) {
+    public void unFollowUser(Follower follower) {
+        int loggedInUserId = follower.getLoggedInUser().getId();
+        int unFollowUserId = follower.getFollower().getId();
         if(isLoggedInUserFollowingUser(loggedInUserId, unFollowUserId)){
             Optional<User> loggedInUser = userRepository.findById(loggedInUserId);
             Optional<User> unFollowUser = userRepository.findById(unFollowUserId);
             if(loggedInUser.isPresent() && unFollowUser.isPresent()){
-                Follower follower = followerRepository.findByLoggedInUserAndFollower(loggedInUser.get(), unFollowUser.get()).get(0);
-                followerRepository.deleteById(follower.getId());
+                Follower tempFollower = followerRepository.findByLoggedInUserAndFollower(loggedInUser.get(), unFollowUser.get()).get(0);
+                followerRepository.deleteById(tempFollower.getId());
             }
         }
     }

@@ -23,4 +23,10 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> searchByBody(String body);
 
     List<Post> findByBodyIgnoreCaseContaining(String body);
+
+    @Query(value = "select DISTINCT p.* from Post p, User u, like_table li, Comment c where u.id in :userIdList and ( p.created_by_id = u.id or li.liked_by_id = u.id or c.commented_by_id = u.id) order by p.created_time desc LIMIT :start, :end", nativeQuery = true)
+    List<Post> getHomePageFeed(List<Integer> userIdList, int start, int end);
+
+    @Query(value = "select count(DISTINCT p.id) from Post p, User u, like_table li, Comment c where u.id in :userIdList and ( p.created_by_id = u.id or li.liked_by_id = u.id or c.commented_by_id = u.id) order by p.created_time desc", nativeQuery = true)
+    Integer getHomePageFeedCount(List<Integer> userIdList);
 }
