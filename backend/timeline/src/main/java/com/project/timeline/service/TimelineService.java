@@ -133,9 +133,9 @@ public class TimelineService {
             restPostWrapperTemplate.setTotalCount(totalCount);
             int start = calculateStart(totalCount, pageNum);
             if (start == -1) return restPostWrapperTemplate;
-            if((start + 9) < totalCount)
+            if((start + 10) < totalCount)
                 restPostWrapperTemplate.setHasMore(true);
-            List<Post> posts = postRepository.getHomePageFeed(userIdList, start, start + 9);
+            List<Post> posts = postRepository.getHomePageFeed(userIdList, start, start + 10);
             postWrappers.addAll(getPostWrapper(posts));
         }
         restPostWrapperTemplate.setPosts(postWrappers);
@@ -144,7 +144,7 @@ public class TimelineService {
     }
 
     private int calculateStart(int totalCount, int pageNum) {
-        int start = ((pageNum - 1) * (10)) + 1;
+        int start = ((pageNum - 1) * (10));
         if (start < totalCount) return start;
         return -1;
     }
