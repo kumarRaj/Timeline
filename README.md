@@ -1,8 +1,5 @@
 # Timeline
 
-
-Deadline - 23rd Dec
-
 - Timeline which is like Feed.
 - Infinite scroll facility.
 - Like and comment button
